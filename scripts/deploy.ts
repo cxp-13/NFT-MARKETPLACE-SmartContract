@@ -9,11 +9,12 @@ async function main() {
   const basicNft = await BasicNft.deploy();
 
   console.log("BasicNft address:", basicNft.target);
-
   const NFTMarketPlace = await ethers.getContractFactory("NFTMarketPlace");
   const nftMarketPlace = await NFTMarketPlace.deploy();
 
   console.log("NFTMarketPlace address:", nftMarketPlace.target);
+
+
 }
 
 main()
