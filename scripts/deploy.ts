@@ -1,20 +1,24 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  // 本地Hardhat网络测试
+  // const [deployer] = await ethers.getSigners();
+  // console.log("Deploying contracts with the account:", deployer.address);
 
-  console.log("Deploying contracts with the account:", deployer.address);
+  const basicNft = await ethers.deployContract("BasicNft", []);
+  const nftMarketPlace = await ethers.deployContract(
+    "NFTMarketPlace",
+    [],
+  );
 
-  const BasicNft = await ethers.getContractFactory("BasicNft");
-  const basicNft = await BasicNft.deploy();
-
+  // for (let index = 0; index < 3; index++) {
+  //   await basicNft.connect(deployer).mintNft();
+  // }
+  // let tokenCounter = await basicNft.connect(deployer).getTokenCounter();
+  // console.log("Token Counter:", tokenCounter.toString());
+  
   console.log("BasicNft address:", basicNft.target);
-  const NFTMarketPlace = await ethers.getContractFactory("NFTMarketPlace");
-  const nftMarketPlace = await NFTMarketPlace.deploy();
-
   console.log("NFTMarketPlace address:", nftMarketPlace.target);
-
-
 }
 
 main()
