@@ -75,9 +75,24 @@ describe("NFTMarketPlace Contract", function () {
     userBalanceAfter = ethers.formatEther(userBalanceAfter);
     console.log("buyerBalanceAfter:", buyerBalanceAfter);
     console.log("userBalanceAfter:", userBalanceAfter);
-// 判断前后资产变化
+    // 判断前后资产变化
     expect(buyerBalanceBefore - buyerBalanceAfter).to.be.greaterThan(88);
     expect(userBalanceAfter - userBalanceBefore).to.be.lessThan(88);
+  });
+  // 监测防重入攻击
+  it("Check the reentrant", async function () {
+    let nftPrice = ethers.parseEther("88");
+    console.log("nftPrice:", nftPrice);
+    let [, , buyer] = await ethers.getSigners();
+    // 展示并售出
+    await nftMarketPlace.connect(user).listItem(basicNft.target, nftPrice, 0);
+    for (let index = 0; index < 3; index++) {
+      nftMarketPlace.connect(buyer).buyItem(basicNft.target, 0, {
+        value: nftPrice,
+      });
+    }
+    let proceeds = await nftMarketPlace.getProceeds(user.getAddress());
+    console.log("proceeds:", proceeds);
   });
 
   it("Should cancel a listing", async function () {
@@ -85,7 +100,10 @@ describe("NFTMarketPlace Contract", function () {
     await nftMarketPlace.connect(user).listItem(basicNft.target, nftPrice, 0);
     await nftMarketPlace.connect(user).cancelListing(basicNft.target, 0);
     let listing = await nftMarketPlace.getListing(basicNft.target, 0);
-    expect(listing).to.deep.equal([0n, '0x0000000000000000000000000000000000000000']);
+    expect(listing).to.deep.equal([
+      0n,
+      "0x0000000000000000000000000000000000000000",
+    ]);
   });
 
   it("Should update a listing", async function () {
@@ -93,7 +111,9 @@ describe("NFTMarketPlace Contract", function () {
     let newNftPrice = ethers.parseEther("888");
 
     await nftMarketPlace.connect(user).listItem(basicNft.target, nftPrice, 0);
-    await nftMarketPlace.connect(user).updateListing(basicNft.target, 0, newNftPrice);
+    await nftMarketPlace
+      .connect(user)
+      .updateListing(basicNft.target, 0, newNftPrice);
 
     let listing = await nftMarketPlace.getListing(basicNft.target, 0);
     expect(listing).to.deep.equal([newNftPrice, await user.getAddress()]);
