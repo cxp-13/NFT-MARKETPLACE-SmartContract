@@ -1,5 +1,6 @@
-原项目地址：https://github.com/TechPlanB/NFT-MARKETPLACE
-主要变更：
+## 原项目地址：https://github.com/TechPlanB/NFT-MARKETPLACE
+## 前端项目：https://github.com/cxp-13/NFT-MARKETPLACE-FrontEnd
+## 主要变更：
 1. 测试和部署脚本
 2. 智能合约中的部分第三方库的引用
 3. 主要库的版本等
